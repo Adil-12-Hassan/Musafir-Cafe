@@ -1,0 +1,15 @@
+{
+  "name": "musafir-cafe-server",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nest build --config nest-cli.json --path tsconfig.build.json",
+    "start": "nest start --config nest-cli.json --path tsconfig.build.json",
+    "start:dev": "nest start --watch --config nest-cli.json --path tsconfig.build.json",
+    "start:debug": "nest start --debug --watch --config nest-cli.json --path tsconfig.build.json",
+    "start:prod": "node dist/main.js",
+    "lint": "oxlint --type-aware src/ test/",
+    "test": "vitest run --config vitest.config.ts",
+    "test:e2e": "vitest run --config vitest.config.e2e.ts"
+  }
+}

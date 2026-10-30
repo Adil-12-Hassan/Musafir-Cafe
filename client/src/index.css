@@ -1,0 +1,24 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-brand-cream text-brand-dark font-body antialiased;
+  }
+}
+
+@layer utilities {
+  .glass {
+    backdrop-filter: blur(16px) saturate(180%);
+    background: rgba(250, 249, 247, 0.75);
+    border: 1px solid rgba(224, 219, 213, 0.6);
+  }
+  .glass-dark {
+    backdrop-filter: blur(16px) saturate(180%);
+    background: rgba(26, 22, 18, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+}
