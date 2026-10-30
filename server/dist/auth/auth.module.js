@@ -13,6 +13,7 @@ import { AuthService } from './auth.service.js';
 import { JwtStrategy } from './jwt.strategy.js';
 import { LocalStrategy } from './local.strategy.js';
 import { Admin } from './admin.entity.js';
+import { getAuthSecret } from './auth-secrets.js';
 let AuthModule = class AuthModule {
 };
 AuthModule = __decorate([
@@ -21,7 +22,7 @@ AuthModule = __decorate([
             TypeOrmModule.forFeature([Admin]),
             PassportModule,
             JwtModule.register({
-                secret: process.env.JWT_SECRET || 'musafir-super-secret-change-in-prod',
+                secret: getAuthSecret('JWT_SECRET', 'musafir-super-secret-change-in-prod'),
                 signOptions: { expiresIn: '15m' },
             }),
         ],

@@ -57,7 +57,7 @@ export default function Home() {
               journey.
             </h1>
             <p className="hero-anim text-brand-muted text-base leading-relaxed max-w-md">
-              Keep moving. Keep growing. Your journey is yours — and ours began with a single cart in Jinnah Colony.
+              Keep moving. Keep growing. Your journey is yours - and ours began with a single cart in Jinnah Colony.
             </p>
             <div className="hero-anim flex gap-3 flex-wrap">
               <Link
@@ -75,7 +75,7 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Right — glass card */}
+          {/* Right - glass card */}
           <div className="hero-anim hidden md:flex items-center justify-center">
             <div
               className="relative w-72 h-72 flex flex-col items-center justify-center text-center p-8 rounded-2xl"
@@ -177,10 +177,10 @@ export default function Home() {
           <div>
             <p className="text-xs uppercase tracking-[0.2em] opacity-60 mb-4">Our Story</p>
             <h2 className="font-display text-4xl font-bold leading-tight mb-6">
-              From a cart to a cafe — the Musafir journey.
+              From a cart to a cafe - the Musafir journey.
             </h2>
             <p className="text-white/75 leading-relaxed mb-8">
-              What started as a humble cart on the streets of Jinnah Colony grew into a place where people pause, connect, and carry on. Musafir means traveller — and every cup we serve is a small companion for yours.
+              What started as a humble cart on the streets of Jinnah Colony grew into a place where people pause, connect, and carry on. Musafir means traveller - and every cup we serve is a small companion for yours.
             </p>
             <Link
               to="/about"

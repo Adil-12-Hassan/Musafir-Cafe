@@ -1,7 +1,5 @@
-import { useEffect, useState } from 'react';
-import { io } from 'socket.io-client';
+import { useEffect, useRef, useState } from 'react';
 import api from '../../api/axios';
-import { useAuthStore } from '../../store/authStore';
 
 const STATUSES = ['received', 'preparing', 'ready', 'done'];
 
@@ -12,56 +10,57 @@ const STATUS_COLOR: Record<string, string> = {
   done:      'text-white/30 border-white/10 bg-white/3',
 };
 
+interface OrderItem {
+  name: string;
+  size: 'medium' | 'large';
+  quantity: number;
+}
+
+interface Order {
+  id: number;
+  orderId: string;
+  customerName: string;
+  customerPhone: string;
+  total: number;
+  createdAt: string;
+  items: OrderItem[];
+  notes?: string | null;
+  status: string;
+}
+
 export default function LiveOrders() {
-  const [orders, setOrders] = useState<any[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState<number | null>(null);
-  const [newIds, setNewIds] = useState<Set<string>>(new Set());
   const [error, setError] = useState('');
-  const { accessToken } = useAuthStore();
-
-  const fetchOrders = async () => {
-    try {
-      const { data } = await api.get('/orders');
-      setOrders(data);
-      setError('');
-    } catch {
-      setError('Could not load orders. Please sign in again and retry.');
-    }
-    setLoading(false);
-  };
+  const isFetching = useRef(false);
 
   useEffect(() => {
+    let active = true;
+    const fetchOrders = async () => {
+      if (isFetching.current) return;
+      isFetching.current = true;
+      try {
+        const { data } = await api.get('/orders');
+        if (active) {
+          setOrders(data);
+          setError('');
+        }
+      } catch {
+        if (active) setError('Could not load orders. Please sign in again and retry.');
+      } finally {
+        isFetching.current = false;
+        if (active) setLoading(false);
+      }
+    };
+
     void fetchOrders();
-
-    // Connect WebSocket
-    const socket = io('http://localhost:3001/orders', {
-      transports: ['websocket'],
-      auth: { token: accessToken },
-    });
-    socket.on('connect', () => socket.emit('admin_join'));
-    socket.on('connect_error', () => setError('Live connection failed. Orders will still load when refreshed.'));
-    socket.on('joined', () => setError(''));
-    socket.on('new_order', (order: any) => {
-      setOrders((prev) => [order, ...prev.filter((existing) => existing.id !== order.id)]);
-      setNewIds((prev) => new Set([...prev, order.orderId]));
-      setTimeout(() => {
-        setNewIds((prev) => {
-          const next = new Set(prev);
-          next.delete(order.orderId);
-          return next;
-        });
-      }, 4000);
-    });
-
-    socket.on('order_status_update', ({ orderId, status }: { orderId: string; status: string }) => {
-      setOrders((prev) =>
-        prev.map((o) => (o.orderId === orderId ? { ...o, status } : o))
-      );
-    });
-
-    return () => { socket.disconnect(); };
-  }, [accessToken]);
+    const intervalId = window.setInterval(() => void fetchOrders(), 5000);
+    return () => {
+      active = false;
+      window.clearInterval(intervalId);
+    };
+  }, []);
 
   const updateStatus = async (id: number, status: string) => {
     setUpdatingId(id);
@@ -83,11 +82,11 @@ export default function LiveOrders() {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="font-display text-2xl font-bold text-white">Live Orders</h1>
-          <p className="text-white/40 text-sm mt-1">Real-time order management</p>
+          <p className="text-white/40 text-sm mt-1">Order management · refreshes every 5 seconds</p>
         </div>
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-          <span className="text-xs text-white/40 uppercase tracking-widest">Live</span>
+          <span className="text-xs text-white/40 uppercase tracking-widest">Polling</span>
           <span className="ml-3 text-sm text-white/60 font-medium">{active.length} active</span>
         </div>
       </div>
@@ -106,20 +105,11 @@ export default function LiveOrders() {
           {active.map((order) => (
             <div
               key={order.id}
-              className={`border transition-all duration-500 ${
-                newIds.has(order.orderId)
-                  ? 'border-green-400/50 bg-green-400/5'
-                  : 'border-white/8 bg-white/3'
-              }`}
+              className="border border-white/8 bg-white/3"
             >
               {/* Order header */}
               <div className="flex flex-col gap-3 border-b border-white/5 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
                 <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2">
-                  {newIds.has(order.orderId) && (
-                    <span className="text-[10px] bg-green-400 text-black px-2 py-0.5 uppercase font-bold tracking-widest">
-                      NEW
-                    </span>
-                  )}
                   <span className="font-mono text-base font-bold text-white">{order.orderId}</span>
                   <span className="text-sm text-white/50">{order.customerName}</span>
                   <span className="text-xs text-white/30">{order.customerPhone}</span>
@@ -136,7 +126,7 @@ export default function LiveOrders() {
 
               {/* Items */}
               <div className="px-5 py-3 border-b border-white/5 flex flex-wrap gap-2">
-                {order.items?.map((item: any, i: number) => (
+                {order.items?.map((item, i) => (
                   <span
                     key={i}
                     className="text-xs bg-white/6 border border-white/8 px-3 py-1 text-white/60"

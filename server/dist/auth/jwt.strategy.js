@@ -10,12 +10,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
+import { getAuthSecret } from './auth-secrets.js';
 let JwtStrategy = class JwtStrategy extends PassportStrategy(Strategy) {
     constructor() {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
-            secretOrKey: process.env.JWT_SECRET || 'musafir-super-secret-change-in-prod',
+            secretOrKey: getAuthSecret('JWT_SECRET', 'musafir-super-secret-change-in-prod'),
         });
     }
     async validate(payload) {

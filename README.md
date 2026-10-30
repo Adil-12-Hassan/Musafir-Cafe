@@ -6,10 +6,10 @@ A full-stack cafe ordering app for browsing the menu, placing orders, and follow
 
 - 🍽️ Browse the cafe menu and add items to a cart
 - 🧾 Place an order and track its status
-- ⚡ See new orders and status updates in real time
+- 🔄 Keep the admin order board up to date with automatic polling
 - 🛠️ Admin dashboard with order statistics, live orders, order history, and menu management
 - 🔐 Protected admin routes with access and refresh token authentication
-- 💾 SQLite database for menu items, orders, and admin accounts
+- 💾 SQLite for local development and PostgreSQL for production data
 
 ## 🧰 Tech Stack
 
@@ -17,15 +17,15 @@ A full-stack cafe ordering app for browsing the menu, placing orders, and follow
 | --- | --- |
 | Frontend | React, TypeScript, Vite, Tailwind CSS, Zustand |
 | Backend | NestJS, TypeScript, TypeORM |
-| Database | SQLite (`better-sqlite3`) |
-| Real-time updates | Socket.IO |
+| Database | SQLite locally; PostgreSQL in production |
+| Order updates | HTTP polling |
 
 ## 📁 Project Structure
 
 ```text
 musafir-cafe/
 ├── client/    # React + Vite customer site and admin dashboard
-├── server/    # NestJS API, authentication, and WebSocket gateway
+├── server/    # NestJS API, authentication, and Vercel entry point
 │   └── musafir.db # SQLite database
 └── README.md
 ```
@@ -55,6 +55,8 @@ Create `server/.env` if you need to override the local defaults:
 PORT=3001
 CLIENT_URL=http://localhost:5173
 DATABASE_PATH=musafir.db
+# For production, set DATABASE_URL to your managed PostgreSQL connection string.
+DATABASE_URL=
 ADMIN_USERNAME=your-admin-username
 ADMIN_PASSWORD=use-a-strong-unique-password
 JWT_SECRET=replace-with-a-long-random-secret
@@ -102,6 +104,22 @@ For an existing database, update the admin account through your deployment's acc
 | `npm run test:e2e` | Run server end-to-end tests |
 | `npm run lint` | Lint server source and tests |
 | `npm --prefix client run lint` | Lint frontend source |
+| `npm --prefix server run migration:run` | Create/update the PostgreSQL schema |
+
+## ▲ Deploy the API to Vercel
+
+Create a Vercel project for this repository and set its **Root Directory** to `server`. The included [`server/vercel.json`](./server/vercel.json) configures the install and build commands; leave **Output Directory** blank.
+
+Add these environment variables in Vercel:
+
+- `DATABASE_URL` - managed PostgreSQL connection string (use the provider's pooled URL if available)
+- `CLIENT_URL` - deployed frontend origin, such as `https://your-site.vercel.app`
+- `ADMIN_USERNAME` and `ADMIN_PASSWORD` - used to create the first admin account
+- `JWT_SECRET` and `JWT_REFRESH_SECRET` - two different, long, randomly generated secrets
+
+Before deploying, run `npm run migration:run` from the `server` directory with `DATABASE_URL` set to create the PostgreSQL schema. The API seeds the initial admin and menu when their tables are empty. The SQLite database is not automatically copied to PostgreSQL; import existing menu and order data separately if needed.
+
+The admin order board polls every five seconds instead of using Socket.IO, because Vercel Functions do not keep a persistent WebSocket connection. Set the frontend's `VITE_API_URL` to `https://your-api.vercel.app/api`.
 
 ## 🗺️ Main Pages
 

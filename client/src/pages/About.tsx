@@ -18,7 +18,7 @@ export default function About() {
             <span className="italic opacity-80">a traveller's cafe.</span>
           </h1>
           <p className="mt-6 text-white/70 text-base leading-relaxed max-w-xl">
-            Musafir means traveller. That word is at the heart of everything we do — from the name on our cups to the stories shared at our counter.
+            Musafir means traveller. That word is at the heart of everything we do - from the name on our cups to the stories shared at our counter.
           </p>
         </div>
       </div>
@@ -35,7 +35,7 @@ export default function About() {
               Before there was a cafe, there was a cart. Parked at the edge of Jinnah Colony in Faisalabad, that cart served one thing: coffee, made well, with care. People stopped. They sipped. They stayed a little longer than they meant to.
             </p>
             <p className="text-brand-muted leading-relaxed">
-              That cart was the seed. What grew from it wasn't just a business — it was a place where people on different journeys could pause, together.
+              That cart was the seed. What grew from it wasn't just a business - it was a place where people on different journeys could pause, together.
             </p>
           </div>
           <div
@@ -64,7 +64,7 @@ export default function About() {
               {
                 icon: '🧭',
                 title: 'Keep Moving',
-                desc: "Life is a journey, not a destination. We don't believe in standing still — we believe in the next step forward.",
+                desc: "Life is a journey, not a destination. We don't believe in standing still - we believe in the next step forward.",
               },
               {
                 icon: '🤝',
@@ -95,7 +95,7 @@ export default function About() {
                 Every drink is a story.
               </h2>
               <p className="text-brand-muted leading-relaxed mb-4">
-                Our drinks aren't just beverages — each one has a character, a mood, a moment it was made for. The Spanish Sip for the bold explorer. The Vanilla Vibe for the quiet dreamer. The Caramel Cloud for those who deserve something sweet.
+                Our drinks aren't just beverages - each one has a character, a mood, a moment it was made for. The Spanish Sip for the bold explorer. The Vanilla Vibe for the quiet dreamer. The Caramel Cloud for those who deserve something sweet.
               </p>
               <p className="text-brand-muted leading-relaxed mb-8">
                 We start with quality ingredients and build up from there. No shortcuts. No compromise.

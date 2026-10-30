@@ -15,7 +15,7 @@ export class MenuService implements OnModuleInit {
     const count = await this.menuRepo.count();
     if (count === 0) {
       const items = [
-        { name: 'Spanish Sip', description: 'Rich, creamy & smooth — just your type.', category: 'iced_coffee', priceM: 370, priceL: 450, ingredients: ['Coffee', 'Cold Milk', 'Sweetened Condensed Milk', 'Ice'] },
+        { name: 'Spanish Sip', description: 'Rich, creamy & smooth - just your type.', category: 'iced_coffee', priceM: 370, priceL: 450, ingredients: ['Coffee', 'Cold Milk', 'Sweetened Condensed Milk', 'Ice'] },
         { name: 'Honey Latte', description: 'Smooth coffee with a touch of golden honey.', category: 'iced_coffee', priceM: 370, priceL: 450, ingredients: ['Coffee', 'Milk', 'Honey', 'Ice'] },
         { name: 'Caramel Cloud', description: 'Sweet, creamy & pure happiness.', category: 'iced_coffee', priceM: 350, priceL: 430, ingredients: ['Coffee', 'Cold Milk', 'Caramel Syrup', 'Ice'] },
         { name: 'Hazel Hit', description: 'Nutty, smooth & totally addictive.', category: 'iced_coffee', priceM: 350, priceL: 430, ingredients: ['Coffee', 'Cold Milk', 'Hazelnut Syrup', 'Ice'] },

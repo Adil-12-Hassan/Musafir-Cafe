@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { Admin } from './admin.entity.js';
+import { getAuthSecret } from './auth-secrets.js';
 
 @Injectable()
 export class AuthService implements OnModuleInit {
@@ -26,8 +27,15 @@ export class AuthService implements OnModuleInit {
       }
 
       const hash = await bcrypt.hash(password, 12);
-      await this.adminRepo.save({ username, passwordHash: hash });
-      console.log('Admin created.');
+      const result = await this.adminRepo
+        .createQueryBuilder()
+        .insert()
+        .values({ username, passwordHash: hash })
+        .orIgnore()
+        .execute();
+      if (result.identifiers.length > 0) {
+        console.log('Admin created.');
+      }
     }
   }
 
@@ -45,7 +53,7 @@ export class AuthService implements OnModuleInit {
   generateRefreshToken(admin: Admin) {
     return this.jwtService.sign(
       { sub: admin.id, username: admin.username, type: 'refresh' },
-      { secret: process.env.JWT_REFRESH_SECRET || 'musafir-refresh-secret', expiresIn: '7d' },
+      { secret: getAuthSecret('JWT_REFRESH_SECRET', 'musafir-refresh-secret'), expiresIn: '7d' },
     );
   }
 
@@ -63,7 +71,7 @@ export class AuthService implements OnModuleInit {
   async refresh(refreshToken: string) {
     try {
       const payload = this.jwtService.verify(refreshToken, {
-        secret: process.env.JWT_REFRESH_SECRET || 'musafir-refresh-secret',
+        secret: getAuthSecret('JWT_REFRESH_SECRET', 'musafir-refresh-secret'),
       });
       const admin = await this.adminRepo.findOne({ where: { id: payload.sub } });
       if (!admin || !admin.refreshToken) throw new UnauthorizedException();

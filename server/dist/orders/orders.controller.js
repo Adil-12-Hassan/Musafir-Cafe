@@ -12,19 +12,14 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 import { Controller, Get, Post, Patch, Param, Body, UseGuards, Query } from '@nestjs/common';
 import { OrdersService } from './orders.service.js';
-import { OrdersGateway } from './orders.gateway.js';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard.js';
 let OrdersController = class OrdersController {
     ordersService;
-    ordersGateway;
-    constructor(ordersService, ordersGateway) {
+    constructor(ordersService) {
         this.ordersService = ordersService;
-        this.ordersGateway = ordersGateway;
     }
     async create(body) {
-        const order = await this.ordersService.create(body);
-        this.ordersGateway.emitNewOrder(order);
-        return order;
+        return this.ordersService.create(body);
     }
     track(orderId) {
         return this.ordersService.findByOrderId(orderId);
@@ -32,10 +27,8 @@ let OrdersController = class OrdersController {
     findAll(status) {
         return this.ordersService.findAll(status);
     }
-    async updateStatus(id, body) {
-        const order = await this.ordersService.updateStatus(+id, body.status);
-        this.ordersGateway.emitStatusUpdate(order.orderId, order.status);
-        return order;
+    updateStatus(id, body) {
+        return this.ordersService.updateStatus(+id, body.status);
     }
 };
 __decorate([
@@ -67,12 +60,11 @@ __decorate([
     __param(1, Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, Object]),
-    __metadata("design:returntype", Promise)
+    __metadata("design:returntype", void 0)
 ], OrdersController.prototype, "updateStatus", null);
 OrdersController = __decorate([
     Controller('orders'),
-    __metadata("design:paramtypes", [OrdersService,
-        OrdersGateway])
+    __metadata("design:paramtypes", [OrdersService])
 ], OrdersController);
 export { OrdersController };
 //# sourceMappingURL=orders.controller.js.map

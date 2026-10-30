@@ -201,7 +201,7 @@ export default function Track() {
           <div className="text-center py-16">
             <span className="text-6xl block mb-4">🛵</span>
             <p className="font-display text-xl font-bold text-brand-dark">Enter your Order ID above</p>
-            <p className="text-brand-muted text-sm mt-2">It looks like MSF-2047 — check your receipt</p>
+            <p className="text-brand-muted text-sm mt-2">It looks like MSF-2047 - check your receipt</p>
           </div>
         )}
       </div>

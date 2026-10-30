@@ -16,6 +16,7 @@ import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { Admin } from './admin.entity.js';
+import { getAuthSecret } from './auth-secrets.js';
 let AuthService = class AuthService {
     adminRepo;
     jwtService;
@@ -32,8 +33,15 @@ let AuthService = class AuthService {
                 throw new Error('ADMIN_USERNAME and ADMIN_PASSWORD must be set to create the initial admin account.');
             }
             const hash = await bcrypt.hash(password, 12);
-            await this.adminRepo.save({ username, passwordHash: hash });
-            console.log('Admin created.');
+            const result = await this.adminRepo
+                .createQueryBuilder()
+                .insert()
+                .values({ username, passwordHash: hash })
+                .orIgnore()
+                .execute();
+            if (result.identifiers.length > 0) {
+                console.log('Admin created.');
+            }
         }
     }
     async validateAdmin(username, password) {
@@ -47,7 +55,7 @@ let AuthService = class AuthService {
         return this.jwtService.sign({ sub: admin.id, username: admin.username });
     }
     generateRefreshToken(admin) {
-        return this.jwtService.sign({ sub: admin.id, username: admin.username, type: 'refresh' }, { secret: process.env.JWT_REFRESH_SECRET || 'musafir-refresh-secret', expiresIn: '7d' });
+        return this.jwtService.sign({ sub: admin.id, username: admin.username, type: 'refresh' }, { secret: getAuthSecret('JWT_REFRESH_SECRET', 'musafir-refresh-secret'), expiresIn: '7d' });
     }
     async login(admin) {
         const accessToken = this.generateAccessToken(admin);
@@ -59,7 +67,7 @@ let AuthService = class AuthService {
     async refresh(refreshToken) {
         try {
             const payload = this.jwtService.verify(refreshToken, {
-                secret: process.env.JWT_REFRESH_SECRET || 'musafir-refresh-secret',
+                secret: getAuthSecret('JWT_REFRESH_SECRET', 'musafir-refresh-secret'),
             });
             const admin = await this.adminRepo.findOne({ where: { id: payload.sub } });
             if (!admin || !admin.refreshToken)
