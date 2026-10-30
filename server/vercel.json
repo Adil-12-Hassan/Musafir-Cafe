@@ -1,9 +1,4 @@
 {
   "installCommand": "npm install",
-  "buildCommand": "npm run build",
-  "functions": {
-    "index.ts": {
-      "maxDuration": 30
-    }
-  }
+  "buildCommand": "npm run build"
 }
