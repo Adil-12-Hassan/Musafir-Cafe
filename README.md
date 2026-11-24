@@ -1,34 +1,113 @@
 # ☕ Musafir Cafe
 
-A full-stack cafe ordering app for browsing the menu, placing orders, and following them from the kitchen to pickup. Cafe staff can manage the menu and orders through a live admin dashboard.
+### A little pause along the way.
+
+Musafir Cafe is a full-stack cafe ordering platform designed to simplify the customer ordering experience and daily cafe operations.
+
+Customers can explore the menu, choose drink sizes, place orders, receive a digital receipt, and track preparation progress. Cafe staff can manage menu items, monitor incoming orders, and update order statuses through a dedicated admin dashboard.
+
+<p align="center">
+  <strong>Good Coffee. Warm Company. Better Journeys.</strong>
+</p>
+
+---
 
 ## ✨ Features
 
-- 🍽️ Browse the cafe menu and add items to a cart
-- 🧾 Place an order and track its status
-- 🔄 Keep the admin order board up to date with automatic polling
-- 🛠️ Admin dashboard with order statistics, live orders, order history, and menu management
-- 🔐 Protected admin routes with access and refresh token authentication
-- 💾 SQLite for local development and PostgreSQL for production data
+### 🛍️ Customer Experience
+- Browse the cafe menu.
+- Filter drinks by category.
+- Select medium and large drink sizes.
+- View item descriptions, ingredients, and prices.
+- Add and remove items from the shopping cart.
+- Update item quantities.
+- Place orders with customer details and special notes.
+- Receive a unique order reference.
+- Download a digital receipt.
+- Track order preparation progress.
+
+### 🛠️ Admin Dashboard
+- Secure administrator login.
+- View daily order statistics.
+- Monitor today's revenue.
+- View recent orders.
+- Manage incoming orders.
+- Update order preparation status.
+- View completed orders and order history.
+- Add, edit, hide, and remove menu items.
+
+### 🔐 Authentication
+- Administrator authentication.
+- Short-lived access tokens.
+- HTTP-only refresh-token cookie.
+- Hashed passwords and refresh tokens.
+- Protected administration routes.
+
+### ⚡ Order Management
+- Unique order references (`MSF-XXXX`).
+- Automatic order board polling every five seconds.
+- Order status tracking.
+- Order history.
+- Daily revenue and status statistics.
+
+---
 
 ## 🧰 Tech Stack
 
-| Area | Technologies |
-| --- | --- |
-| Frontend | React, TypeScript, Vite, Tailwind CSS, Zustand |
-| Backend | NestJS, TypeScript, TypeORM |
-| Database | SQLite locally; PostgreSQL in production |
-| Order updates | HTTP polling |
+| Layer | Technologies |
+|---|---|
+| Frontend | React 18, TypeScript |
+| Build Tool | Vite 5 |
+| Styling | Tailwind CSS 3 |
+| Routing | React Router 7 |
+| State Management | Zustand 5 |
+| HTTP Client | Axios |
+| Backend | NestJS 12 |
+| Backend Language | TypeScript |
+| ORM | TypeORM |
+| Local Database | SQLite |
+| Production Database | PostgreSQL |
+| Authentication | Passport, JWT, bcrypt |
+| Receipt Generation | html2canvas |
 
-## 📁 Project Structure
+---
+
+## 🏗️ Project Structure
 
 ```text
-musafir-cafe/
-├── client/    # React + Vite customer site and admin dashboard
-├── server/    # NestJS API, authentication, and Vercel entry point
-│   └── musafir.db # SQLite database
+Musafir-Cafe/
+│
+├── client/
+│   └── src/
+│       ├── components/
+│       ├── pages/
+│       │   └── admin/
+│       ├── store/
+│       ├── api/
+│       ├── App.tsx
+│       └── main.tsx
+│
+├── server/
+│   ├── src/
+│   │   ├── auth/
+│   │   ├── menu/
+│   │   ├── orders/
+│   │   ├── dashboard/
+│   │   ├── migrations/
+│   │   ├── app.module.ts
+│   │   ├── main.ts
+│   │   └── configure-app.ts
+│   │
+│   ├── test/
+│   ├── .env.example
+│   └── package.json
+│
+├── package.json
+├── package-lock.json
 └── README.md
 ```
+
+---
 
 ## 🚀 Getting Started
 
@@ -36,10 +115,16 @@ musafir-cafe/
 
 - Node.js (LTS recommended)
 - npm
+- Git
 
-### Install dependencies
+### 1. Clone the repository
 
-From the project root, install each app's dependencies:
+```bash
+git clone https://github.com/Adil-12-Hassan/Musafir-Cafe.git
+cd Musafir-Cafe
+```
+
+### 2. Install dependencies
 
 ```bash
 npm install
@@ -47,90 +132,274 @@ npm install --prefix server
 npm install --prefix client
 ```
 
-### Configure the server
+### 3. Configure the backend
 
-Create `server/.env` if you need to override the local defaults:
+Create `server/.env`:
 
 ```env
 PORT=3001
+
 CLIENT_URL=http://localhost:5173
+
 DATABASE_PATH=musafir.db
-# For production, set DATABASE_URL to your managed PostgreSQL connection string.
+
+# PostgreSQL for production
 DATABASE_URL=
+
+# Initial administrator account
 ADMIN_USERNAME=your-admin-username
-ADMIN_PASSWORD=use-a-strong-unique-password
-JWT_SECRET=replace-with-a-long-random-secret
-JWT_REFRESH_SECRET=replace-with-a-different-long-random-secret
+ADMIN_PASSWORD=your-strong-password
+
+# Authentication secrets
+JWT_SECRET=your-long-random-access-secret
+JWT_REFRESH_SECRET=your-different-random-refresh-secret
 ```
 
-`DATABASE_PATH` is relative to the server's working directory unless you provide an absolute path.
-Keep `server/.env` local and never commit it. The admin variables are used only when the database has no admin account; changing them does not reset an existing account.
+The application uses SQLite locally when `DATABASE_URL` is not configured.
 
-The API defaults to `http://localhost:3001/api`, and the frontend uses that URL unless `VITE_API_URL` is set. For example, create `client/.env.local` to point the frontend at another API:
+For production, configure a PostgreSQL connection string.
 
-```env
-VITE_API_URL=http://localhost:3001/api
-```
+**Important:** Keep `.env` files private. Initial admin credentials are used when no administrator account exists in the database.
 
-### Start the app
-
-Run the API and frontend in separate terminals from the project root:
+### 4. Start the backend
 
 ```bash
 npm run start:dev
 ```
 
+Backend API:
+
+```text
+http://localhost:3001/api
+```
+
+### 5. Start the frontend
+
+Open another terminal:
+
 ```bash
 npm run client:dev
 ```
 
-Then open [Frontend](http://localhost:5173). The API is available at [Backend](http://localhost:3001/api).
+Frontend:
 
-## 🔑 Admin Access
+```text
+http://localhost:5173
+```
 
-On first startup, the server creates an admin account using `ADMIN_USERNAME` and `ADMIN_PASSWORD` from `server/.env`. Set both values before starting the server with a new database. Use `/admin/login` to access the dashboard.
+---
 
-For an existing database, update the admin account through your deployment's account-management process; changing the environment variables alone does not change existing credentials. Configure strong, unique admin credentials and JWT secrets before deployment.
+## 🔌 API Documentation
+
+Base URL:
+
+```text
+http://localhost:3001/api
+```
+
+### Authentication — `/auth`
+
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/login` | Administrator login |
+| POST | `/refresh` | Refresh access token |
+| POST | `/logout` | Administrator logout |
+
+### Menu — `/menu`
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/` | Get available menu items |
+| GET | `/:id` | Get a menu item |
+| POST | `/` | Create menu item |
+| PATCH | `/:id` | Update menu item |
+| DELETE | `/:id` | Hide menu item |
+
+### Orders — `/orders`
+
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/` | Place a customer order |
+| GET | `/track/:orderId` | Track an order |
+| GET | `/` | Retrieve orders (admin) |
+| PATCH | `/:id/status` | Update order status (admin) |
+
+### Dashboard — `/dashboard`
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/stats` | Retrieve today's statistics |
+
+Protected endpoints require an access token:
+
+```http
+Authorization: Bearer YOUR_ACCESS_TOKEN
+```
+
+---
+
+## 📦 Order Workflow
+
+```text
+Customer visits website
+        |
+        v
+   Browse Menu
+        |
+        v
+   Add to Cart
+        |
+        v
+    Checkout
+        |
+        v
+    Place Order
+        |
+        v
+   Order Created
+        |
+        v
+    Received
+        |
+        v
+    Preparing
+        |
+        v
+      Ready
+        |
+        v
+       Done
+```
+
+Each order receives a unique reference that customers can use to check its status.
+
+---
+
+## 📊 Admin Dashboard
+
+The administration dashboard provides:
+
+- Today's order count.
+- Today's revenue.
+- Order status breakdown.
+- Recent order overview.
+- Live order management.
+- Menu management.
+- Order history.
+
+The live order page refreshes automatically every five seconds using HTTP polling.
+
+---
+
+## 🗄️ Database
+
+Musafir Cafe uses TypeORM with two database configurations:
+
+| Environment | Database |
+|---|---|
+| Local development | SQLite |
+| Production | PostgreSQL |
+
+Main entities:
+
+- `Admin` — administrator accounts and refresh-token hashes.
+- `MenuItem` — cafe products, prices, ingredients, and availability.
+- `Order` — customer information, ordered items, totals, and status.
+
+PostgreSQL schema migration:
+
+```bash
+npm --prefix server run migration:run
+```
+
+The SQLite development database is not automatically transferred to PostgreSQL.
+
+---
 
 ## 🧪 Useful Commands
 
-| Command | Description |
-| --- | --- |
-| `npm run start:dev` | Start the NestJS API in watch mode |
-| `npm run client:dev` | Start the Vite frontend |
-| `npm run build` | Build the NestJS server |
-| `npm --prefix client run build` | Type-check and build the frontend |
-| `npm test` | Run server unit tests |
-| `npm run test:e2e` | Run server end-to-end tests |
-| `npm run lint` | Lint server source and tests |
-| `npm --prefix client run lint` | Lint frontend source |
-| `npm --prefix server run migration:run` | Create/update the PostgreSQL schema |
+| Command | Purpose |
+|---|---|
+| `npm run start:dev` | Start backend in watch mode |
+| `npm run client:dev` | Start frontend |
+| `npm run build` | Build backend |
+| `npm --prefix client run build` | Build frontend |
+| `npm test` | Run backend unit tests |
+| `npm run test:e2e` | Run backend E2E tests |
+| `npm run lint` | Lint backend |
+| `npm --prefix client run lint` | Lint frontend |
 
-## ▲ Deploy the API to Vercel
+---
 
-Create a Vercel project for this repository and set its **Root Directory** to `server`. The included [`server/vercel.json`](./server/vercel.json) configures the install and build commands; leave **Output Directory** blank.
+## ▲ Deployment
 
-Add these environment variables in Vercel:
+The backend includes a Vercel configuration.
 
-- `DATABASE_URL` - managed PostgreSQL connection string (use the provider's pooled URL if available)
-- `CLIENT_URL` - deployed frontend origin, such as `https://your-site.vercel.app`
-- `ADMIN_USERNAME` and `ADMIN_PASSWORD` - used to create the first admin account
-- `JWT_SECRET` and `JWT_REFRESH_SECRET` - two different, long, randomly generated secrets
+For production deployment:
 
-Before deploying, run `npm run migration:run` from the `server` directory with `DATABASE_URL` set to create the PostgreSQL schema. The API seeds the initial admin and menu when their tables are empty. The SQLite database is not automatically copied to PostgreSQL; import existing menu and order data separately if needed.
+1. Deploy the frontend.
+2. Deploy the backend with the `server` directory as its root.
+3. Provision a PostgreSQL database.
+4. Configure `DATABASE_URL`.
+5. Configure `CLIENT_URL` with the frontend origin.
+6. Set strong `ADMIN_USERNAME` and `ADMIN_PASSWORD` values.
+7. Configure separate `JWT_SECRET` and `JWT_REFRESH_SECRET` values.
+8. Run the PostgreSQL migration.
+9. Set frontend `VITE_API_URL` to the deployed API URL.
 
-The admin order board polls every five seconds instead of using Socket.IO, because Vercel Functions do not keep a persistent WebSocket connection. Set the frontend's `VITE_API_URL` to `https://your-api.vercel.app/api`.
+The admin order board uses polling rather than persistent WebSocket connections.
 
-## 🗺️ Main Pages
+---
+
+## 🗺️ Application Routes
+
+### Customer Website
 
 | Page | Route |
-| --- | --- |
+|---|---|
 | Home | `/` |
 | Menu | `/menu` |
-| Order tracking | `/track` |
+| Order Tracking | `/track` |
 | About | `/about` |
-| Admin login | `/admin/login` |
-| Admin dashboard | `/admin/dashboard` |
-| Live orders | `/admin/orders` |
-| Menu manager | `/admin/menu` |
-| Order history | `/admin/history` |
+
+### Administration
+
+| Page | Route |
+|---|---|
+| Admin Login | `/admin/login` |
+| Dashboard | `/admin/dashboard` |
+| Live Orders | `/admin/orders` |
+| Menu Manager | `/admin/menu` |
+| Order History | `/admin/history` |
+
+---
+
+## 🚧 Future Improvements
+
+- Server-side price verification.
+- Improved order tracking security.
+- Customer order history.
+- Online payment integration.
+- Kitchen display system.
+- Printable order tickets.
+- Inventory management.
+- Sales reports and analytics.
+- Automated notifications.
+- Improved mobile ordering experience.
+
+---
+
+## 👨‍💻 Developer
+
+**Adil Hassan**
+
+- GitHub: [@Adil-12-Hassan](https://github.com/Adil-12-Hassan)
+- Repository: [Musafir Cafe](https://github.com/Adil-12-Hassan/Musafir-Cafe)
+
+---
+
+<p align="center">
+  Made with ❤️ and ☕
+  <br />
+  <strong>Musafir Cafe - A little pause along the way.</strong>
+</p>
